@@ -1,11 +1,11 @@
 import random
-from enum import Enum
+import os
 
-
-class Move(Enum):
-    STONE = 1
-    PAPER = 2
-    SCISORS = 3
+# CONSTANTS
+STONE = 1
+SCISSORS = 2
+PAPER = 3
+EXIT = 0
 
 
 def game_loop():
@@ -34,18 +34,19 @@ def read_user_choice():
     """
     result = None
     while True:
-        user_choice = input("""Make your move, 
+        clear_screen()
+        print("""
+               Make your move, 
                             1.- Stone
                             2.- Paper
                             3.- Scisors
                             h.- Help
                             0.- Exit
-                                                        
-                            Please select an option: 
-                            """)
+               """)
+        user_choice = input('Please select an option: ')
         if is_number(user_choice):
             if int(user_choice) >= 0 and int(user_choice) < 4:
-                result = translate_move(user_choice)
+                result = int(user_choice)
                 break
         else:
             if user_choice.lower() == 'h':
@@ -57,17 +58,14 @@ def is_exit(user_choice):
     """
     predicado que devuelve True si el usuario quiere salir y False si quiere seguir Jugando
     """
-    result = False
-    if user_choice == 0:
-        result = True
-    return result
+    return int(user_choice) == EXIT
 
 
 def generate_computer_choice():
     """
     Genera y devuelve una jugada aleatoria del ordenador
     """
-    return translate_move(random.randint(1, 3))
+    return random.randint(1, 3)
 
 
 def evaluate_move(user_choice, comp_choice):
@@ -75,24 +73,24 @@ def evaluate_move(user_choice, comp_choice):
     Evalua las jugadas del usuario y el ordenador y devuelve un texto con el resultado
     """
     winner = None
-    if user_choice == Move.STONE:
-        if comp_choice == Move.SCISORS:
+    if user_choice == STONE:
+        if comp_choice == SCISSORS:
             winner = 'User wins'
-        elif comp_choice == Move.PAPER:
+        elif comp_choice == PAPER:
             winner = 'Computer wins'
         else:
             winner = 'User and Computer draws'
-    if user_choice == Move.SCISORS:
-        if comp_choice == Move.PAPER:
+    if user_choice == SCISSORS:
+        if comp_choice == PAPER:
             winner = 'User wins'
-        elif comp_choice == Move.STONE:
+        elif comp_choice == STONE:
             winner = 'Computer wins'
         else:
             winner = 'User and Computer draws'
-    if user_choice == Move.PAPER:
-        if comp_choice == Move.STONE:
+    if user_choice == PAPER:
+        if comp_choice == STONE:
             winner = 'User wins'
-        elif comp_choice == Move.SCISORS:
+        elif comp_choice == SCISSORS:
             winner = 'Computer wins'
         else:
             winner = 'User and Computer draws'
@@ -105,6 +103,8 @@ def print_result(result):
     Muestra en pantalla el resultado de la jugada entre usuario y ordenador
     """
     print(result)
+    input('Press any key to continue...')
+
     return None
 
 
@@ -114,6 +114,11 @@ def show_help():
     """
     # muestra en pantalla ayuda acerca de las jugadas y quien gana a quien
     print("to do ayuda ")
+    return None
+
+
+def clear_screen():
+    os.system('clear')
     return None
 
 
@@ -127,20 +132,6 @@ def is_number(user_choice):
         result = True
     except:
         result = False
-    return result
-
-
-def translate_move(move):
-    """
-    REcibe un int y devuelve un elemento de Enum con la jugada
-    """
-    if move == 1:
-        result = Move.STONE
-    elif move == 2:
-        result = Move.SCISORS
-    else:
-        result = Move.PAPER
-
     return result
 
 
